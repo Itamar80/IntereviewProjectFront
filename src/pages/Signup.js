@@ -4,13 +4,20 @@ import Form from '../components/Form'
 import { useDispatch, useSelector } from 'react-redux';
 import { signUp } from '../actions/Auth.actions';
 import firebase from 'firebase';
-import { signInWithFacebook, signInWithGoogle } from '../actions/Auth.actions';
+import { signInWithFacebook, signInWithGoogle, resetAuthError } from '../actions/Auth.actions';
+import { IconButton, Colors } from 'react-native-paper';
 
 const Signup = ({ navigation }) => {
     const authState = useSelector(state => state.auth)
     const dispatch = useDispatch()
     const facebookProvider = new firebase.auth.FacebookAuthProvider();
     const googleProvider = new firebase.auth.GoogleAuthProvider();
+
+    useEffect(() => {
+        if (authState.isLoggedIn) {
+            navigation.navigate('Homepage')
+        }
+    }, [authState.isLoggedIn])
 
     const onSubmitClick = (userCreds) => {
         dispatch(signUp(userCreds))
@@ -42,11 +49,13 @@ const Signup = ({ navigation }) => {
             var credential = error.credential;
         });
     }
-    useEffect(() => {
-        if (authState.isLoggedIn) {
-            navigation.navigate('Homepage')
-        }
-    }, [authState.isLoggedIn])
+
+    const onChangeRoute = () => {
+        console.log('changing route');
+        navigation.navigate('Login')
+    }
+
+
 
     const Modal = () => {
         return (
@@ -81,7 +90,7 @@ const Signup = ({ navigation }) => {
     return (
         <View style={styles.container}>
             {authState.authError && <Modal />}
-            <Form authError={authState.authError} googleLogin={googleLogin} facebookLogin={facebookLogin} onSubmitClick={onSubmitClick} navigation={navigation} navigateTo='Login' type='Signup' bottunText='Sign in' />
+            <Form onChangeRoute={onChangeRoute} googleLogin={googleLogin} facebookLogin={facebookLogin} onSubmitClick={onSubmitClick} type='Signup' bottunText='Sign in' />
         </View>
     )
 }

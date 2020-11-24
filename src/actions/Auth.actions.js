@@ -5,7 +5,7 @@ export const signIn = creds => {
             creds.email,
             creds.password
         ).then(() => {
-            dispatch({ type: 'LOGIN_SUCCESS', isLoggedIn: true })
+            dispatch({ type: 'LOGIN_SUCCESS', isLoggedIn: true, email: creds.email })
         }).catch((err) => {
             dispatch({ type: 'LOGIN_ERROR', err })
         })
@@ -14,12 +14,12 @@ export const signIn = creds => {
 
 export const signInWithFacebook = user => {
     return (dispatch) => {
-        dispatch({ type: 'LOGIN_FACEBOOK_SUCCESS', isLoggedIn: true, user: user.email })
+        dispatch({ type: 'LOGIN_FACEBOOK_SUCCESS', isLoggedIn: true, user: user.email, userName: user.displayName })
     }
 }
 export const signInWithGoogle = user => {
     return (dispatch) => {
-        dispatch({ type: 'LOGIN_GOOGLE_SUCCESS', isLoggedIn: true, user: user.email })
+        dispatch({ type: 'LOGIN_GOOGLE_SUCCESS', isLoggedIn: true, user: user.email, userName: user.displayName })
     }
 }
 export const resetAuthError = () => {

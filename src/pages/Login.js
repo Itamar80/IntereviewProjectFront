@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { StatusBar, Text, View, StyleSheet, TouchableHighlight } from 'react-native';
+import { Text, View, StyleSheet, TouchableHighlight } from 'react-native';
 import Form from '../components/Form'
 import { useDispatch, useSelector } from 'react-redux';
 import { signIn } from '../actions/Auth.actions';
@@ -79,10 +79,15 @@ const Login = ({ navigation }) => {
             </View>
         )
     }
+
+    const onChangeRoute = () => {
+        navigation.navigate('Register')
+    }
+
     return (
         <View style={styles.container}>
             {authState.authError && <Modal />}
-            { <Form googleLogin={googleLogin} facebookLogin={facebookLogin} loggedInUser={authState.isLoggedIn} authError={authState.authError} onSubmitClick={onSubmitClick} navigation={navigation} navigateTo='Register' type='Login' bottunText='Signup' signIn={signIn} />}
+            { <Form onChangeRoute={onChangeRoute} googleLogin={googleLogin} facebookLogin={facebookLogin} onSubmitClick={onSubmitClick} type='Login' bottunText='Signup' />}
         </View>
     )
 }
@@ -100,6 +105,7 @@ const styles = StyleSheet.create({
     modal: {
         position: 'absolute',
         zIndex: 2,
+        top: 0
     },
     modalHeader: {
         fontSize: 20,

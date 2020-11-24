@@ -1,5 +1,5 @@
 import React from 'react';
-import { StatusBar, StyleSheet,ScrollView } from 'react-native';
+import { StatusBar } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import Login from './src/pages/Login';
@@ -23,15 +23,15 @@ const store = createStore(reducers,
   )
 );
 
-const Stack = createStackNavigator()
-// ..showsVerticalScrollIndicator
+const Stack = createStackNavigator();
+
 export default function App() {
   return (
     <Provider store={store} >
       <StatusBar backgroundColor='#1c313a' barStyle='light-content' />
       <Logo />
       <NavigationContainer >
-        <Stack.Navigator initialRouteName='Homepage'>
+        <Stack.Navigator initialRouteName='Login'>
           <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
           <Stack.Screen name="Register" component={Signup} options={{ headerShown: false }} />
           <Stack.Screen name="Homepage" component={Homepage} options={{ headerShown: false }} />

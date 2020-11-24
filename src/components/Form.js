@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { TextInput, TouchableOpacity, Button, Text, View, StyleSheet } from 'react-native';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { TextInput, TouchableOpacity, Text, View, StyleSheet, TouchableWithoutFeedback } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import { IconButton, Colors } from 'react-native-paper';
 
-const Form = ({ onSubmitClick, navigateTo, facebookLogin, googleLogin, type, bottunText }) => {
+const Form = ({ onSubmitClick, onChangeRoute, facebookLogin, googleLogin, type, bottunText }) => {
     const route = useRoute();
     const [userCred, setUserCred] = useState({ email: '', password: '' })
     const [verifyInput, setVerifyInput] = useState(true)
@@ -53,6 +52,7 @@ const Form = ({ onSubmitClick, navigateTo, facebookLogin, googleLogin, type, bot
             <TouchableOpacity style={styles.button} onPress={() => handleSubmit()}>
                 <Text style={styles.buttonText}>{type}</Text>
             </TouchableOpacity>
+
             <TouchableOpacity style={styles.facebookButton} onPress={() => facebookLogin()}>
                 <View style={{ justifyContent: "center", alignItems: 'center', flexDirection: 'row' }}>
                     <IconButton
@@ -65,6 +65,7 @@ const Form = ({ onSubmitClick, navigateTo, facebookLogin, googleLogin, type, bot
                     <Text style={styles.buttonText}>Login With Facebook</Text>
                 </View>
             </TouchableOpacity>
+
             <TouchableOpacity style={styles.facebookButton} onPress={() => googleLogin()}>
                 <View style={{ justifyContent: "center", alignItems: 'center', flexDirection: 'row' }}>
                     <IconButton
@@ -80,7 +81,7 @@ const Form = ({ onSubmitClick, navigateTo, facebookLogin, googleLogin, type, bot
 
             <View style={styles.signupTextContainer}>
                 <Text style={styles.signupText}> Don't have an account yet?</Text>
-                <TouchableWithoutFeedback onPress={() => navigation.navigate(`${navigateTo}`)}>
+                <TouchableWithoutFeedback onPress={() => onChangeRoute()}>
                     <Text style={styles.signupButton}> {bottunText}</Text>
                 </TouchableWithoutFeedback>
 

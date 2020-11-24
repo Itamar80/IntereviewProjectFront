@@ -1,33 +1,55 @@
-import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableWithoutFeedback,ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, TouchableWithoutFeedback, Image } from 'react-native';
 import { deleteWorker } from '../actions/Worker.action'
 import { useDispatch, useSelector } from 'react-redux';
 import { IconButton, Colors } from 'react-native-paper';
+import axios from 'axios';
 
 const WorkersList = ({ navigation, logout }) => {
     const dispatch = useDispatch()
     const workersFromState = useSelector(state => state.worker.workers);
     const authState = useSelector(state => state.auth);
     const firebase = useSelector(state => state.firebase)
-    const { isLoggedIn, loggedInSocialUser } = authState;
+    const { isLoggedIn, loggedInSocialUser, userName } = authState;
+    const [imagesUrls, setImagesUrls] = useState([])
 
     useEffect(() => {
-        if (isLoggedIn === false)
+        if (!isLoggedIn) {
             navigation.navigate('Login')
+        }
+        else getRandomPictures()
     }, [isLoggedIn])
 
     useEffect(() => {
+        getRandomPictures()
     }, [workersFromState])
 
-    const renderWorkersList = workersFromState.map((worker) => {
-        let { id, name, email } = worker;
+    const capitalize = (str) => {
+        if (str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+    }
 
+    const getRandomPictures = async () => {
+        try {
+            const result = await axios.get(`https://randomuser.me/api/?results=${workersFromState.length}`);
+            result.data.results.map(result => {
+                setImagesUrls(prevImageUrls => [...prevImageUrls, result.picture.medium])
+            })
+        } catch (err) {
+            return
+        }
+    }
+
+    const renderWorkersList = workersFromState.map((worker, idx) => {
+        let { id, name, email } = worker;
         const onDeleteWorker = (id) => {
             dispatch(deleteWorker(id))
         }
 
         return (
             <View style={styles.listContainer} key={id}>
+                {imagesUrls !== '' && <Image style={styles.randomImage} source={{ uri: `${imagesUrls[idx]}` }} />}
                 <View style={styles.listTextContainer}>
                     <Text style={styles.text}>Name : {name}</Text>
                     <Text style={styles.text}>email : {email}</Text>
@@ -57,15 +79,31 @@ const WorkersList = ({ navigation, logout }) => {
             </View>
         )
     })
+
+
+
+
     return (
         <View style={styles.container}>
             <View style={styles.headerContainer}>
-                <Text style={styles.header}>Workers List</Text>
-                {isLoggedIn ? <Text style={styles.loggedInUser}> {loggedInSocialUser ? 'Social login email:  ' + loggedInSocialUser : 'Regular email :  ' + firebase.auth.email}</Text> :
-                    <Text style={styles.loggedInUser}>No LoggedIn User</Text>}
-                <TouchableWithoutFeedback onPress={() => logout()} style={styles.addWorkerButton}>
-                    <Text style={styles.addWorkerButtonText}>Logout</Text>
-                </TouchableWithoutFeedback>
+                <View>
+                    <Text style={styles.header}>Welcome {capitalize(userName)}</Text>
+                </View>
+                <View style={styles.loggedInUserContainer}>
+                    {isLoggedIn ? <Text style={styles.loggedInUser}> {loggedInSocialUser ? 'Social login email:  ' + loggedInSocialUser : 'Logged in email :  ' + firebase.auth.email}</Text> :
+                        <Text style={styles.loggedInUser}>No LoggedIn User</Text>}
+                    <TouchableWithoutFeedback onPress={() => logout()} style={styles.addWorkerButton}>
+                        <View style={styles.logout}>
+                            <IconButton
+                                style={styles.logoutIcon}
+                                icon="logout"
+                                color={Colors.white}
+                                size={20}
+                                onPress={() => logout()}
+                            />
+                        </View>
+                    </TouchableWithoutFeedback>
+                </View>
                 <TouchableWithoutFeedback
                     style={styles.addWorkerButton}
                     onPress={() => navigation.navigate('AddUpdateWorkerPage', { workerId: null })}>
@@ -82,7 +120,7 @@ const WorkersList = ({ navigation, logout }) => {
                 </TouchableWithoutFeedback>
             </View>
             <View >
-                <View style={{ marginTop: 20, marginLeft: 20 }}>{renderWorkersList}</View>
+                <View style={{ marginTop: 20, marginLeft: 20, maxWidth: 550 }}>{renderWorkersList}</View>
             </View>
         </View>
     )
@@ -96,22 +134,36 @@ const styles = StyleSheet.create({
         backgroundColor: '#455a64',
         paddingHorizontal: 15,
     },
+    randomImage: {
+        width: 40,
+        height: 40,
+        borderRadius: '50%',
+        marginRight: 5
+    },
     header: {
-        fontSize: 35,
+        fontSize: 25,
         color: 'white',
-        marginBottom: 50
+        marginBottom: 35
+    },
+    loggedInUserContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     headerContainer: {
         alignItems: 'center',
     },
     loggedInUser: {
         color: 'white',
-        marginBottom: 30
     },
     listContainer: {
         flexDirection: 'row',
-        paddingBottom: 20
-
+        borderBottomColor: 'grey',
+        borderBottomWidth: 1,
+        marginTop: 10
+    },
+    listTextContainer: {
+        marginBottom: 10
     },
     addWorker: {
         textAlign: 'center',
@@ -124,6 +176,14 @@ const styles = StyleSheet.create({
         marginVertical: 20,
         paddingVertical: 7
     },
+    logout: {
+        justifyContent: "center",
+        alignItems: 'center',
+        backgroundColor: '#1c313a',
+        borderRadius: '70%',
+        padding: 5,
+        marginLeft: 20,
+    },
     updateWorkerButton: {
         marginLeft: 50
     },
@@ -132,8 +192,15 @@ const styles = StyleSheet.create({
         margin: 0,
         marginLeft: 15,
     },
+    logoutIcon: {
+        position: 'relative',
+        margin: 0,
+    },
     text: {
         color: 'white'
+    },
+    addWorkerButton: {
+        width: 50
     },
     addWorkerButtonText: {
         color: 'white',

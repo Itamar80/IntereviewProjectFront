@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TextInput, TouchableWithoutFeedback, StatusBar } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableWithoutFeedback } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { addUpdateWorker } from '../actions/Worker.action'
 import { useRoute } from '@react-navigation/native';
+import { IconButton, Colors } from 'react-native-paper';
 
 const AddUpdateWorkerPage = ({ navigation }) => {
     const route = useRoute();
@@ -28,6 +29,18 @@ const AddUpdateWorkerPage = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
+            <TouchableWithoutFeedback
+                style={styles.navigateBack}
+                onPress={() => navigation.navigate('Homepage')}>
+                <View style={styles.iconContainer}>
+                    <IconButton
+                        icon="home"
+                        color={Colors.white}
+                        size={30}
+                        onPress={() => navigation.navigate('Homepage')}
+                    />
+                </View>
+            </TouchableWithoutFeedback>
             <View style={{ flex: 1 }}>
                 <Text style={styles.headerText}>{workerId ? 'Update Worker Page' : 'Add Worker Page'}</Text>
                 <TextInput
@@ -123,6 +136,11 @@ const styles = StyleSheet.create({
         color: '#ffffff',
         fontSize: 16,
         fontWeight: '500'
-    }
+    },
+    iconContainer: {
+        position: 'absolute',
+        top: -11,
+        left: -5,
+    },
 
 });
