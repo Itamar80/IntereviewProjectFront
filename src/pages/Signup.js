@@ -51,7 +51,6 @@ const Signup = ({ navigation }) => {
     }
 
     const onChangeRoute = () => {
-        console.log('changing route');
         navigation.navigate('Login')
     }
 

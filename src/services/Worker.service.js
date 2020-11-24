@@ -7,7 +7,6 @@ export const workerService = {
 }
 
 async function getWorkers() {
-  console.log('worker service get');
   try {
     const response = await axios.get('http://localhost:3000/');
     if (response.status !== 200) {
