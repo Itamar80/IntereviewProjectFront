@@ -1,3 +1,5 @@
+// regular signin with email and password
+
 export const signIn = creds => {
     return (dispatch, getState, { getFirebase }) => {
         const firebase = getFirebase();
@@ -12,22 +14,7 @@ export const signIn = creds => {
     }
 }
 
-export const signInWithFacebook = user => {
-    return (dispatch) => {
-        dispatch({ type: 'LOGIN_FACEBOOK_SUCCESS', isLoggedIn: true, user: user.email, userName: user.displayName })
-    }
-}
-export const signInWithGoogle = user => {
-    return (dispatch) => {
-        dispatch({ type: 'LOGIN_GOOGLE_SUCCESS', isLoggedIn: true, user: user.email, userName: user.displayName })
-    }
-}
-export const resetAuthError = () => {
-    return (dispatch) => {
-        dispatch({ type: 'RESET_AUTHERROR', authError: null })
-    }
-}
-
+// regular signout with firebase
 
 export const signOut = () => {
     return (dispatch, getState, { getFirebase }) => {
@@ -39,6 +26,28 @@ export const signOut = () => {
     }
 }
 
+//  signin with facebook credentials
+export const signInWithFacebook = user => {
+    return (dispatch) => {
+        dispatch({ type: 'LOGIN_FACEBOOK_SUCCESS', isLoggedIn: true, user: user.email, userName: user.displayName })
+    }
+}
+
+//  signin with google credentials
+export const signInWithGoogle = user => {
+    return (dispatch) => {
+        dispatch({ type: 'LOGIN_GOOGLE_SUCCESS', isLoggedIn: true, user: user.email, userName: user.displayName })
+    }
+}
+
+// reset auth erorr to disable modal
+export const resetAuthError = () => {
+    return (dispatch) => {
+        dispatch({ type: 'RESET_AUTHERROR', authError: null })
+    }
+}
+
+// sign up with firebase
 export const signUp = (newUser) => {
     return (dispatch, getState, { getFirebase, getFirestore }) => {
         const firebase = getFirebase();

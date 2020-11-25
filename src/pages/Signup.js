@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { StatusBar, Modal, View, Text, StyleSheet, TouchableHighlight } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableHighlight } from 'react-native';
 import Form from '../components/Form'
 import { useDispatch, useSelector } from 'react-redux';
 import { signUp } from '../actions/Auth.actions';
@@ -13,15 +13,19 @@ const Signup = ({ navigation }) => {
     const facebookProvider = new firebase.auth.FacebookAuthProvider();
     const googleProvider = new firebase.auth.GoogleAuthProvider();
 
+    // if there is logged in user navigate to homepage
     useEffect(() => {
         if (authState.isLoggedIn) {
             navigation.navigate('Homepage')
         }
     }, [authState.isLoggedIn])
 
+    // dispatching signin when pressing login button
     const onSubmitClick = (userCreds) => {
         dispatch(signUp(userCreds))
     }
+
+    // google login with firebase
     const googleLogin = () => {
         firebase.auth().signInWithPopup(googleProvider)
             .then(function (result) {
@@ -37,6 +41,8 @@ const Signup = ({ navigation }) => {
             });
     }
 
+    // facebook login with firebase
+
     const facebookLogin = () => {
         firebase.auth().signInWithPopup(facebookProvider).then(function (result) {
             var token = result.credential.accessToken;
@@ -50,11 +56,13 @@ const Signup = ({ navigation }) => {
         });
     }
 
+    // simple changing route function
+
     const onChangeRoute = () => {
         navigation.navigate('Login')
     }
 
-
+    // simple modal, render only if there is auth error
 
     const Modal = () => {
         return (

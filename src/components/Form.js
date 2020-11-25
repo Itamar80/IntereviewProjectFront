@@ -6,27 +6,28 @@ import { IconButton, Colors } from 'react-native-paper';
 const Form = ({ onSubmitClick, onChangeRoute, facebookLogin, googleLogin, type, bottunText }) => {
     const route = useRoute();
     const [userCred, setUserCred] = useState({ email: '', password: '' })
-    const [verifyInput, setVerifyInput] = useState(true)
+    const [isValidInput, setIsValidInput] = useState(true)
     const [emailInputText, setEmailInputText] = useState('')
 
+    // valitadion of email input
     const handleText = (text) => {
         if (text.includes('@')) {
-            setVerifyInput(true)
+            setIsValidInput(true)
         }
         setEmailInputText(text)
         setUserCred({ ...userCred, email: text })
     }
-
+    // submiting the form content
     const handleSubmit = () => {
         if (!emailInputText.includes('@')) {
-            setVerifyInput(false)
+            setIsValidInput(false)
             return
         }
         onSubmitClick(userCred)
     }
     return (
         <View styles={styles.container} >
-            {!verifyInput && <Text style={{ color: 'red', marginLeft: 15 }}>Email or Password is not valid</Text>}
+            {!isValidInput && <Text style={{ color: 'red', marginLeft: 15 }}>Email or Password is not valid</Text>}
             <TextInput
                 placeholder="Email"
                 onChangeText={(text) => handleText(text)}
@@ -54,12 +55,11 @@ const Form = ({ onSubmitClick, onChangeRoute, facebookLogin, googleLogin, type, 
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.facebookButton} onPress={() => facebookLogin()}>
-                <View style={{ justifyContent: "center", alignItems: 'center', flexDirection: 'row' }}>
+                <View style={styles.iconContainer}>
                     <IconButton
-                        style={styles.buttonIcon}
                         icon="facebook"
                         color={Colors.white}
-                        size={18}
+                        size={20}
                         onPress={() => facebookLogin()}
                     />
                     <Text style={styles.buttonText}>Login With Facebook</Text>
@@ -67,12 +67,11 @@ const Form = ({ onSubmitClick, onChangeRoute, facebookLogin, googleLogin, type, 
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.facebookButton} onPress={() => googleLogin()}>
-                <View style={{ justifyContent: "center", alignItems: 'center', flexDirection: 'row' }}>
+                <View style={styles.iconContainer}>
                     <IconButton
-                        style={styles.buttonIcon}
                         icon="gmail"
                         color={Colors.white}
-                        size={18}
+                        size={20}
                         onPress={() => facebookLogin()}
                     />
                     <Text style={styles.buttonText}> Login With Google</Text>
@@ -121,7 +120,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#385898',
         borderRadius: 25,
         marginVertical: 10,
-        paddingVertical: 10
+        paddingVertical: 3
     },
     buttonText: {
         fontSize: 16,
@@ -129,9 +128,10 @@ const styles = StyleSheet.create({
         color: '#ffffff',
         textAlign: 'center',
     },
-    buttonIcon: {
-        margin: 0,
-        marginRight: 15
+    iconContainer: {
+        justifyContent: "space-around",
+        alignItems: 'center',
+        flexDirection: 'row'
     },
     signupTextContainer: {
         flexGrow: .3,

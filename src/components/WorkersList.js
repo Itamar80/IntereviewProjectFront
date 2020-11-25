@@ -13,6 +13,9 @@ const WorkersList = ({ navigation, logout }) => {
     const { isLoggedIn, loggedInSocialUser, userName } = authState;
     const [imagesUrls, setImagesUrls] = useState([])
 
+    // checking if there is logged in user , if not navigate back to login ,
+    // else get pictures for workers 
+
     useEffect(() => {
         if (!isLoggedIn) {
             navigation.navigate('Login')
@@ -20,16 +23,19 @@ const WorkersList = ({ navigation, logout }) => {
         else getRandomPictures()
     }, [isLoggedIn])
 
+    // every time that there is change in the workers , there is a new request to get pictures
     useEffect(() => {
         getRandomPictures()
     }, [workersFromState])
 
+    // simple function to make string capitalize
     const capitalize = (str) => {
         if (str) {
             return str.charAt(0).toUpperCase() + str.slice(1);
         }
     }
 
+    // getting random image from api and associate them with the users
     const getRandomPictures = async () => {
         try {
             const result = await axios.get(`https://randomuser.me/api/?results=${workersFromState.length}`);
@@ -43,6 +49,8 @@ const WorkersList = ({ navigation, logout }) => {
 
     const renderWorkersList = workersFromState.map((worker, idx) => {
         let { id, name, email } = worker;
+
+        // delete worker action , delete with the worker id
         const onDeleteWorker = (id) => {
             dispatch(deleteWorker(id))
         }
@@ -51,13 +59,13 @@ const WorkersList = ({ navigation, logout }) => {
             <View style={styles.listContainer} key={id}>
                 {imagesUrls !== '' && <Image style={styles.randomImage} source={{ uri: `${imagesUrls[idx]}` }} />}
                 <View style={styles.listTextContainer}>
-                    <Text style={styles.text}>Name : {name}</Text>
+                    <Text style={styles.text}>Name : {capitalize(name)}</Text>
                     <Text style={styles.text}>email : {email}</Text>
                 </View>
                 <TouchableWithoutFeedback onPress={() => {
                     navigation.navigate('AddUpdateWorkerPage', { workerId: id })
                 }}>
-                    <Text style={styles.updateWorkerButton}>
+                    <Text >
                         <IconButton
                             icon="account-edit"
                             color={Colors.white}
@@ -67,7 +75,7 @@ const WorkersList = ({ navigation, logout }) => {
                     </Text>
                 </TouchableWithoutFeedback>
                 <TouchableWithoutFeedback onPress={() => onDeleteWorker(id)}>
-                    <Text style={styles.addWorkerButton}>
+                    <Text>
                         <IconButton
                             icon="delete"
                             color={Colors.white}
@@ -160,7 +168,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         borderBottomColor: 'grey',
         borderBottomWidth: 1,
-        marginTop: 10
+        marginTop: 10,
+        justifyContent: 'space-between',
+        alignItems: 'center',
     },
     listTextContainer: {
         marginBottom: 10
@@ -184,9 +194,6 @@ const styles = StyleSheet.create({
         padding: 5,
         marginLeft: 20,
     },
-    updateWorkerButton: {
-        marginLeft: 50
-    },
     icon: {
         position: 'relative',
         margin: 0,
@@ -198,9 +205,6 @@ const styles = StyleSheet.create({
     },
     text: {
         color: 'white'
-    },
-    addWorkerButton: {
-        width: 50
     },
     addWorkerButtonText: {
         color: 'white',

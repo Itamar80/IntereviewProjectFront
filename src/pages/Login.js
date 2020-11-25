@@ -13,21 +13,25 @@ const Login = ({ navigation }) => {
     const facebookProvider = new firebase.auth.FacebookAuthProvider();
     const googleProvider = new firebase.auth.GoogleAuthProvider();
 
+    // if there is logged in user navigate to homepage
     useEffect(() => {
         if (authState.isLoggedIn) {
             navigation.navigate('Homepage')
         }
     }, [authState.isLoggedIn])
 
+    // dispatching signin when pressing login button
     const onSubmitClick = (userCreds) => {
         dispatch(signIn(userCreds))
     }
 
+    // google login with firebase
     const googleLogin = () => {
         firebase.auth().signInWithPopup(googleProvider)
             .then(function (result) {
                 var token = result.credential.accessToken;
                 var user = result.user;
+                // after getting user from google dispatching to login
                 dispatch(signInWithGoogle(user))
 
             }).catch(function (error) {
@@ -38,10 +42,12 @@ const Login = ({ navigation }) => {
             });
     }
 
+    // facebook login with firebase
     const facebookLogin = () => {
         firebase.auth().signInWithPopup(facebookProvider).then(function (result) {
             var token = result.credential.accessToken;
             var user = result.user;
+            // after getting user from google dispatching to login
             dispatch(signInWithFacebook(user))
         }).catch(function (error) {
             var errorCode = error.code;
@@ -51,6 +57,7 @@ const Login = ({ navigation }) => {
         });
     }
 
+    // simple modal, render only if there is auth error
     const Modal = () => {
         return (
             <View style={styles.modal}>
@@ -80,6 +87,7 @@ const Login = ({ navigation }) => {
         )
     }
 
+    // simple changing route function
     const onChangeRoute = () => {
         navigation.navigate('Register')
     }

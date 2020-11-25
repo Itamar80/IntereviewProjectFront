@@ -10,10 +10,13 @@ const AddUpdateWorkerPage = ({ navigation }) => {
     const dispatch = useDispatch()
     const { workerId } = route.params;
     const workersFromState = useSelector(state => state.worker.workers)
+    const [isValidInput, setIsValidInput] = useState(true)
 
     const [addWorkerCreds, setWorkerCreds] = useState({ name: '', email: '' })
     const [updateWorkerCreds, setUpdeteWorkerCreds] = useState({})
+    const [addingError, setAddingError] = useState('')
 
+    // if there is worker id the component is going to update worker , else adding worker.
     if (workerId) {
         useEffect(() => {
             const workerToUpdate = workersFromState.find(worker => worker.id === workerId);
@@ -22,9 +25,28 @@ const AddUpdateWorkerPage = ({ navigation }) => {
 
     }
 
-    const onAddUpdateWorker = (worker) => {
-        dispatch(addUpdateWorker(worker))
-        navigation.navigate('Homepage')
+    // Sending worker to update/add, first checking if there is worker with the same creds.
+    const onSubmitForm = (worker) => {
+        const sameCredsWorker = workersFromState.find(workerFromState => {
+            return workerFromState.name.toLowerCase() === worker.name.toLowerCase() ||
+                workerFromState.email.toLowerCase() === worker.email.toLowerCase()
+        })
+        if (sameCredsWorker) {
+            setAddingError('This worker is already in the system , please re-enter ')
+        } else {
+            if (!worker.email.includes('@')) {
+                setAddingError('Your email section is not valid , please re-enter email')
+            } else {
+                dispatch(addUpdateWorker(worker))
+                navigation.navigate('Homepage')
+            }
+        }
+    }
+
+    // decide where to send the creds (update or add)
+    const addOrUpdate = ({ key }, text) => {
+        workerId ? setUpdeteWorkerCreds({ ...updateWorkerCreds, [key]: text }) :
+            setWorkerCreds({ ...addWorkerCreds, [key]: text })
     }
 
     return (
@@ -43,29 +65,24 @@ const AddUpdateWorkerPage = ({ navigation }) => {
             </TouchableWithoutFeedback>
             <View style={{ flex: 1 }}>
                 <Text style={styles.headerText}>{workerId ? 'Update Worker Page' : 'Add Worker Page'}</Text>
+                {addingError !== '' && <Text style={styles.addingError}>{addingError}</Text>}
                 <TextInput
                     placeholder="Name"
-                    onChangeText={(text) => {
-                        workerId ? setUpdeteWorkerCreds({ ...updateWorkerCreds, name: text }) :
-                            setWorkerCreds({ ...addWorkerCreds, name: text })
-                    }}
+                    onChangeText={(text) => addOrUpdate({ key: 'name' }, text)}
                     placeholderTextColor='#ffffff'
                     style={styles.input}
                     underlineColorAndroid='rgba(0,0,0,0)'
                 />
                 <TextInput
                     placeholder="Email"
-                    onChangeText={(text) => {
-                        workerId ? setUpdeteWorkerCreds({ ...updateWorkerCreds, email: text }) :
-                            setWorkerCreds({ ...addWorkerCreds, email: text })
-                    }}
+                    onChangeText={(text) => addOrUpdate({ key: 'email' }, text)}
                     placeholderTextColor='#ffffff'
                     style={styles.input}
                     underlineColorAndroid='rgba(0,0,0,0)'
                 />
                 <TouchableWithoutFeedback
                     onPress={() => {
-                        onAddUpdateWorker(workerId ? updateWorkerCreds : addWorkerCreds)
+                        onSubmitForm(workerId ? updateWorkerCreds : addWorkerCreds)
                     }}>
                     <View style={styles.button} >
                         <Text style={styles.buttonText}>
@@ -142,5 +159,8 @@ const styles = StyleSheet.create({
         top: -11,
         left: -5,
     },
+    addingError: {
+        color: 'red'
+    }
 
 });

@@ -7,6 +7,8 @@ const INITIAL_STATE = {
 
 export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
+        // always returning the state and updating state data manually
+
         case 'LOGIN_ERROR':
             console.log('Login Error', action.err);
             return {
@@ -16,7 +18,8 @@ export default (state = INITIAL_STATE, action) => {
         case 'LOGIN_SUCCESS':
             console.log('Login Success', state.isLoggedIn, action.email);
             return {
-                ...state, authError: null,
+                ...state,
+                authError: null,
                 isLoggedIn: action.isLoggedIn,
                 userName: action.email.substring(0, action.email.indexOf('@'))
             }
