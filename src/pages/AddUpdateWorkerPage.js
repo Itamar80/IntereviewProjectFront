@@ -10,7 +10,6 @@ const AddUpdateWorkerPage = ({ navigation }) => {
     const dispatch = useDispatch()
     const { workerId } = route.params;
     const workersFromState = useSelector(state => state.worker.workers)
-    const [isValidInput, setIsValidInput] = useState(true)
 
     const [addWorkerCreds, setWorkerCreds] = useState({ name: '', email: '' })
     const [updateWorkerCreds, setUpdeteWorkerCreds] = useState({})
@@ -51,18 +50,7 @@ const AddUpdateWorkerPage = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            <TouchableWithoutFeedback
-                style={styles.navigateBack}
-                onPress={() => navigation.navigate('Homepage')}>
-                <View style={styles.iconContainer}>
-                    <IconButton
-                        icon="home"
-                        color={Colors.white}
-                        size={30}
-                        onPress={() => navigation.navigate('Homepage')}
-                    />
-                </View>
-            </TouchableWithoutFeedback>
+
             <View style={{ flex: 1 }}>
                 <Text style={styles.headerText}>{workerId ? 'Update Worker Page' : 'Add Worker Page'}</Text>
                 {addingError !== '' && <Text style={styles.addingError}>{addingError}</Text>}
@@ -81,12 +69,25 @@ const AddUpdateWorkerPage = ({ navigation }) => {
                     underlineColorAndroid='rgba(0,0,0,0)'
                 />
                 <TouchableWithoutFeedback
+                    style={styles.button}
                     onPress={() => {
                         onSubmitForm(workerId ? updateWorkerCreds : addWorkerCreds)
                     }}>
                     <View style={styles.button} >
                         <Text style={styles.buttonText}>
                             {workerId ? 'Update worker' : 'Add worker'}</Text>
+                    </View>
+                </TouchableWithoutFeedback>
+                <TouchableWithoutFeedback
+                    onPress={() => navigation.navigate('Homepage')}>
+                    <View style={styles.homepageButton}>
+                        <Text style={{ color: 'white', fontWeight: '500' }}>Return to Homepage</Text>
+                        <IconButton
+                            icon="home"
+                            color={Colors.white}
+                            size={20}
+                            onPress={() => navigation.navigate('Homepage')}
+                        />
                     </View>
                 </TouchableWithoutFeedback>
             </View>
@@ -121,7 +122,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     button: {
-        textAlign: 'center',
         width: 300,
         backgroundColor: '#1c313a',
         flexDirection: 'row',
@@ -129,7 +129,16 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         borderRadius: 25,
         marginVertical: 20,
-        paddingVertical: 7
+        paddingVertical: 10
+    },
+    homepageButton: {
+        width: 300,
+        backgroundColor: '#1c313a',
+        flexDirection: 'row',
+        alignItems: "center",
+        justifyContent: 'space-around',
+        borderRadius: 25,
+        paddingVertical: 2
     },
     buttonText: {
         fontSize: 16,
@@ -155,12 +164,11 @@ const styles = StyleSheet.create({
         fontWeight: '500'
     },
     iconContainer: {
-        position: 'absolute',
-        top: -11,
-        left: -5,
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center'
     },
     addingError: {
         color: 'red'
-    }
-
+    },
 });

@@ -72,14 +72,15 @@ const Form = ({ onSubmitClick, onChangeRoute, facebookLogin, googleLogin, type, 
                         icon="gmail"
                         color={Colors.white}
                         size={20}
-                        onPress={() => facebookLogin()}
+                        onPress={() => googleLogin()}
                     />
                     <Text style={styles.buttonText}> Login With Google</Text>
                 </View>
             </TouchableOpacity>
 
             <View style={styles.signupTextContainer}>
-                <Text style={styles.signupText}> Don't have an account yet?</Text>
+                <Text style={styles.signupText}> {route.name === 'Register' ?
+                    `Already have an account?` : `Don't have an account yet?`}</Text>
                 <TouchableWithoutFeedback onPress={() => onChangeRoute()}>
                     <Text style={styles.signupButton}> {bottunText}</Text>
                 </TouchableWithoutFeedback>
